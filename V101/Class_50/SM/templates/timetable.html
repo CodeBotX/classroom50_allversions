@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Quản lý thời khoá biểu{% endblock title %}
+
+{% block Nav %}
+<div class="dropdown">
+    <button type="button" class="btn btn-outline-primary text-white dropdown-toggle" data-bs-toggle="dropdown">
+        Chuyển hướng
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="{%url 'smtimetable'%}">Quản lý TKB</a></li>
+        <li><a class="dropdown-item" href="{%url 'smstudent'%}">Quản lý học sinh</a></li>
+        <li><a class="dropdown-item" href="{%url 'SignUp'%}">Quản lý giáo viên</a></li>
+        <li><a class="dropdown-item" href="{%url 'smclassroom'%}">Quản lý lớp học</a></li>
+        <li><a class="dropdown-item" href="{%url 'smsubject'%}">Quản lý môn học</a></li>
+        <li><a class="dropdown-item" href="{%url 'rankclassrooms'%}">Xếp hạng lớp học</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="{%url 'School'%}">Quản trị</a></li>
+        <li><a class="dropdown-item" href="{%url 'Home'%}">Home</a></li>
+    </ul>
+</div>
+{% endblock Nav %}
+
+{% block content %}
+
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+    
+            <!-- Modal Header -->
+            <div class="modal-header">
+            <h4 class="modal-title">Thông báo</h4>
+            </div>
+    
+            <!-- Modal body -->
+            <div class="modal-body">
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+            </div>
+    
+            <!-- Modal footer -->
+            <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+    
+        </div>
+    </div>
+</div>
+
+<script>
+    // Kiểm tra xem có thông báo nào không
+    {% if messages %}
+    // Hiển thị modal nếu có
+    $(document).ready(function(){
+        $('#myModal').modal('show');
+    });
+    {% endif %}
+</script>
+
+
+<div class="row" style="margin-top: 6rem">
+    <div class="col-1"></div>
+    <div class="col-10">
+        <div class="row">
+            <div class="col-4">
+                <div class="card" style="background-color: #07478D">
+                    <div class="card-body">
+                        <h2 class="card-title text-white" style="margin-top: 0.5rem;">Xếp thời khoá biểu</h2>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Nhập thông tin</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Lớp</th>
+                                        <td>{{form_schedules.classroom }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Ngày trong tuần</th>
+                                        <td>{{form_schedules.dayofweek }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Tiết</th>
+                                        <td>{{form_schedules.period }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Môn</th>
+                                        <td>{{form_schedules.subject }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <input type="hidden" name="action" value="schedule">
+                            <button id="openModalBtn" type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal" style="width:100%">Thêm</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card" style="background-color: #07478D; margin-top: 1rem">
+                    <div class="card-body">
+                        <h2 class="card-title text-white" style="margin-top: 0.5rem;">Xếp thời gian</h2>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Nhập thông tin</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Tiết</th>
+                                        <td>{{form_lessons.period}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Bắt đầu</th>
+                                        <td>{{form_lessons.start_time}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Kết thúc</th>
+                                        <td>{{form_lessons.end_time}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <input type="hidden" name="action" value="lesson">
+                            <button id="openModalBtn" type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal" style="width:100%">Thêm</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="card" style="background-color: #07478D">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-9" style="margin-top: 0.5rem;">
+                                <h2 class="card-title text-white">Thời khoá biểu</h2>
+                            </div>
+                            <div class="col-3" style="margin-top: 0.5rem;">
+                                <form action="" method="get">
+                                    <select class="form-select ml-auto" name="classroom_name" onchange="this.form.submit()">
+                                        <option value="">Chọn Lớp Học...</option>
+                                        {% for classroom in classrooms %}
+                                            <option value="{{ classroom.name }}" {% if selected_classroom and selected_classroom.name == classroom.name %} selected {% endif %}>
+                                                {{ classroom.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+                        <form>
+                            {% if selected_classroom %}
+
+                            <table class="table table-bordered table-responsive" style="background-color: white">
+                                <thead>
+                                    <tr>
+                                        <th>{{ selected_classroom.name }}</th>
+                                        <th id="tiet_1">Tiết 1</th>
+                                        <th id="tiet_2">Tiết 2</th>
+                                        <th id="tiet_3">Tiết 3</th>
+                                        <th id="tiet_4">Tiết 4</th>
+                                        <th id="tiet_5">Tiết 5</th>
+                                        <th id="tiet_6">Tiết 6</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>Thứ 2</th>
+                                        {% for item in schedule_2 %}
+                                        <td> {{ item.subject.name }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                    <tr>
+                                        <th>Thứ 3</th>
+                                        {% for item in schedule_3 %}
+                                        <td> {{ item.subject.name }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                    <tr>
+                                        <th>Thứ 4</th>
+                                        {% for item in schedule_4 %}
+                                        <td> {{ item.subject.name }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                    <tr>
+                                        <th>Thứ 5</th>
+                                        {% for item in schedule_5 %}
+                                        <td> {{ item.subject.name }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                    <tr>
+                                        <th>Thứ 6</th>
+                                        {% for item in schedule_6 %}
+                                        <td> {{ item.subject.name }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                    <tr>
+                                        <th>Thứ 7</th>
+                                        {% for item in schedule_7 %}
+                                        <td> {{ item.subject.name }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                    <tr>
+                                        <th>Chủ nhật</th>
+                                        {% for item in schedule_8 %}
+
+                                        <td> {{ item.subject.name }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <div class="col-1"></div>   
+</div>
+
+{% comment %} Minh Tiến add  {% endcomment %}
+
+{% comment %} {% if selected_classroom %}
+    <h1>{{ selected_classroom.name }}</h1>
+    <h2>Thời khoá biểu cho Thứ 7:</h2>
+    <ul>
+        {% for item in schedule_7 %}
+            <li>
+                <p>Tiết: {{ item.period.period }}</p>
+                <p>Thời gian: {{ item.period.start_time|time:"HH:i" }} - {{ item.period.end_time|time:"HH:i" }}</p>
+                <p>Môn: {{ item.subject.name }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %} {% endcomment %}
+
+{% endblock content %}

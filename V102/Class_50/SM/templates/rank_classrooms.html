@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Xếp hạng{% endblock title %}
+
+{% block Nav %}
+<div class="dropdown">
+    <button type="button" class="btn btn-outline-primary text-white dropdown-toggle" data-bs-toggle="dropdown">
+        Chuyển hướng
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="{%url 'smtimetable'%}">Quản lý TKB</a></li>
+        <li><a class="dropdown-item" href="{%url 'smstudent'%}">Quản lý học sinh</a></li>
+        <li><a class="dropdown-item" href="{%url 'SignUp'%}">Quản lý giáo viên</a></li>
+        <li><a class="dropdown-item" href="{%url 'smclassroom'%}">Quản lý lớp học</a></li>
+        <li><a class="dropdown-item" href="{%url 'smsubject'%}">Quản lý môn học</a></li>
+        <li><a class="dropdown-item" href="{%url 'rankclassrooms'%}">Xếp hạng lớp học</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="{%url 'School'%}">Quản trị</a></li>
+        <li><a class="dropdown-item" href="{%url 'Home'%}">Home</a></li>
+    </ul>
+</div>
+{% endblock Nav %}
+
+{% block content %}
+{% comment %} <h1>Xếp hạng các lớp học</h1>
+
+<table>
+    <tr>
+        <th>Lớp học</th>
+        <th>Điểm trung bình</th>
+    </tr>
+    {% for classroom in ranked_classrooms %}
+    <tr>
+        <td>{{ classroom.classroom }}</td>
+        <td>{{ classroom.average_grade }}</td>
+    </tr>
+    {% endfor %}
+</table> {% endcomment %}
+
+<div class="row" style="margin-top: 6rem">
+    <div class="col-2"></div>
+    <div class="col-8">
+        <div class="card" style="background-color: #07478D; margin-top: 1rem">
+            <div class="card-body">
+                <h2 class="card-title text-white" style="margin-top: 0%;">Xếp hạng lớp học</h2>
+                <form method="POST">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Thứ tự</th>
+                            <th scope="col">Lớp</th>
+                            <th scope="col">Điểm trung bình</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for classroom in ranked_classrooms %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ classroom.classroom }}</td>
+                                <td>{{ classroom.average_grade }}</td>
+                            </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div> 
+    <div class="col-2"></div>   
+</div>
+
+
+{% endblock content %}

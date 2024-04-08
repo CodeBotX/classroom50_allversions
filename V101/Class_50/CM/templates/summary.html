@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Tổng kết{% endblock title %}
+{% comment %} 
+Tổng hợp tuần 
+Như e tạo hôm trước
+trường thứ tự toàn trường
+{% endcomment %}
+
+
+{% block Nav %}
+<div class="dropdown">
+    <button type="button" class="btn btn-outline-primary text-white dropdown-toggle" data-bs-toggle="dropdown">
+        Chuyển hướng
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="{%url 'Home'%}">Home</a></li>
+    </ul>
+</div>
+{% endblock Nav %}
+
+{% block content %}
+
+
+<div class="row"> 
+    <div class="col-1"></div>
+
+    <div class="col-10">
+        <div class="row">
+            <div class="col-4">
+                <div class="card" style="margin-top: 1rem; margin-bottom: 1rem; height:35rem">
+                    <h2 class="card-title text-center">Thông tin lớp</h2>
+                    <div class="card-body">   
+                        <div style="margin-top: 2%; margin-bottom: 2%">
+                            <table class="table " >
+                                <tbody>
+                                <tr>
+                                    <th class="display-6 font-weight-bold" style="font-size: 1.2em" scope="row">Lớp</th>
+                                    <td class="display-6 font-weight-bold" style="font-size: 1.2em">{{ classroom.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="display-6 font-weight-bold" style="font-size: 1.2em" scope="row">Năm học</th>
+                                    <td class="display-6 font-weight-bold" style="font-size: 1.2em">2023-2024</td>
+                                </tr>
+                                <tr>
+                                    <th class="display-6 font-weight-bold" style="font-size: 1.2em" scope="row">Trung bình thi đua</th>
+                                    <td class="display-6 font-weight-bold" style="font-size: 1.2em">{{avglessons}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="card" style="margin-top: 1rem; margin-bottom: 1rem; height:35rem">
+                    <h2 class="card-title">Sơ Đồ Lớp</h2>
+                    
+                    <div class="card-body">
+                        <div>
+                            <div style="margin-bottom:1rem">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    {{ assign_studentForm.seat }}
+                                                </td>
+                                                <td>
+                                                    {{ assign_studentForm.student }}
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-primary" style="width:80%" type="submit">Xếp chỗ</button>
+                                                </td>
+                                            </div>
+                                        </thead>
+                                    </table>
+                                </form>
+                            </div>
+                                <table class="table table-bordered table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th><!-- Thẻ trống để chứa ký tự trắng cho góc trên bên trái -->
+                                            {% for column in columns %}
+                                            <th class="text-center">{{ column }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in rows %}
+                                        <tr>
+                                            <th>{{ row }}</th><!-- Hiển thị số hàng ở cột đầu tiên của mỗi hàng -->
+                                            {% for column in columns %}
+                                            <td> 
+                                                {% for seat in seats %}
+                                                    {% if seat.row == row and seat.column == column %}
+                                                        {% if not seat.student %}
+                                                        <div class="d-flex justify-content-center">
+                                                            <button class="btn btn-danger text-white" style="width:100%">Trống</button>
+                                                        </div>
+                                                        
+                    
+                                                        {% else %}
+                                                        <div class="d-flex justify-content-center">
+                                                        <a class="btn btn-primary text-white text-truncate" style="width:100%">{{ seat.student.name }}</a>
+                                                        </div> 
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                    
+                                            
+                                            {% endfor %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                    
+                                </table>
+                        </div> 
+                    </div>
+        
+                </div>
+            </div>
+        </div>
+    </div> 
+    <div class="col-1"></div>   
+</div>
+
+<div class="row">
+    <div class="col-1"></div>
+    <div class="col-10">
+        {% comment %} <div class="card" style="background-color: #07478D">
+            <div class="card-body">
+                <h2 class="card-title text-white" style="margin-top: 0.5rem;">Thời khoá biểu</h2>
+                <form>
+                    
+                    {% if schedule %}
+                    <table class="table table-bordered table-responsive" style="background-color: white">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th id="tiet_1">Tiết 1</th>
+                                <th id="tiet_2">Tiết 2</th>
+                                <th id="tiet_3">Tiết 3</th>
+                                <th id="tiet_4">Tiết 4</th>
+                                <th id="tiet_5">Tiết 5</th>
+                                <th id="tiet_6">Tiết 6</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Thứ 2</th>
+                                {% for item in schedule_2 %}
+                                <td> {{ item.subject.name }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>Thứ 3</th>
+                                {% for item in schedule_3 %}
+                                <td> {{ item.subject.name }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>Thứ 4</th>
+                                {% for item in schedule_4 %}
+                                <td> {{ item.subject.name }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>Thứ 5</th>
+                                {% for item in schedule_5 %}
+                                <td> {{ item.subject.name }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>Thứ 6</th>
+                                {% for item in schedule_6 %}
+                                <td> {{ item.subject.name }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>Thứ 7</th>
+                                {% for item in schedule_7 %}
+                                <td> {{ item.subject.name }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>Chủ nhật</th>
+                                {% for item in schedule_8 %}
+
+                                <td> {{ item.subject.name }}</td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                    {% endif %}
+                </form>
+            </div>
+        </div> {% endcomment %}
+        <div class="card" style="background-color: #07478D; margin-top:2rem">
+            <div class="card-body">
+                    <h2 class="card-title text-white" style="margin-top: 1rem;">Thông tin tuần học</h2>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Thời gian</th>
+                                <th scope="col">Môn</th>
+                                <th scope="col">Bài dạy</th>
+                                <th scope="col">Nhận xét</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if lessons %}
+                            {% for lesson in lessons %}
+                            <tr>
+                                <th scope="row">{{lesson.date_time }}</th>
+                                <td>{{lesson.subject.name}}</td>
+                                <td>{{lesson.name }}</td>
+                                <td>{{lesson.comment}}</td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+
+
+                        </tbody>
+                    </table>
+                
+
+            </div>
+        </div>
+        
+    </div> 
+    <div class="col-1"></div>   
+</div>
+
+
+{% comment %} Minh Tiến Add {% endcomment %}
+
+{% comment %} <h1>Summary View</h1>
+
+
+    <h2>Schedule</h2>
+    {% if schedule %}
+    <table>
+        <thead>
+            <tr>
+                <th>Day of Week</th>
+                <th>Period</th>
+                <th>Subject</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ schedule.get_dayofweek_display }}</td>
+                <td>{{ schedule.period }}</td>
+                <td>{{ schedule.subject }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% else %}
+    <p>No schedule available for this classroom.</p>
+    {% endif %}
+
+    <h1>Lịch học</h1>
+    <div class="lessons-container">
+        {% if lessons %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Môn học</th>
+                        <th>Thời gian bắt đầu</th>
+                        <th>Thời gian kết thúc</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for lesson in lessons %}
+                    <tr>
+                        <td>{{lesson.name}}</td>
+                        <td>{{ lesson.comment }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Không có tiết học nào để hiển thị.</p>
+        {% endif %}
+    </div>
+
+{% comment %} Minh Tiến ADD {% endcomment %}
+{% comment %} {{avglessons}} {% endcomment %}
+
+
+{% endblock content %}
