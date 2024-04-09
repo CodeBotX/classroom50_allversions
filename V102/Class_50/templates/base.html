@@ -62,7 +62,11 @@
                 <div class="col-1">
                     <ul class="navbar-nav ml-auto">
                       <li class="nav-item ml-auto">
-                        <a class="nav-link text-white btn btn-outline-success" style="font-size:0.7em" href="{% url 'logout' %}">Đăng xuất</a>
+                        <form class="nav-link text-white btn btn-outline-success" action="{% url 'logout' %}" method="post">
+                          {% csrf_token %}
+                          <button type="submit">Logout</button>
+                      </form>
+        
                       </li>
                     </ul>
                 </div>
