@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ng@hq3f60*=wef#wkcbs%+5aw*ryp8p!2n=zgo_s=vzf9t7bu1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['classroom50.online']
 
 
 # Application definition
@@ -133,10 +133,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+STATIC_URL = '/static/'
+STATIC_ROOT = '/home/cla92974/public_html/versions/V102/static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
